@@ -103,7 +103,45 @@ docker restart frps
 # 重启 frps 容器即可生效
 ```
 
-## 链接
+# frpc docker 部署
+frpc 客户端用于连接 frps 服务端并暴露本机服务.本仓库提供了 **frpc.toml** 示例配置,默认示例会把本机 `127.0.0.1:22` 映射到服务端 `7002` 端口.
+
+准备配置文件.
+```shell
+mkdir -p /opt/frpc
+cp frpc.toml /opt/frpc/frpc.toml
+vi /opt/frpc/frpc.toml
+```
+请将 **frpc.toml** 中的 `serverAddr`,`serverPort`,`auth.token`,`name`,`localIP`,`localPort`,`remotePort` 等参数修改为你的 frps 服务端地址,端口,token 和需要代理的本机服务.
+
+启动容器.
+```shell
+sudo docker rm -f frpc 2>/dev/null || true
+sudo docker run -d \
+    --name frpc \
+    --restart always \
+    --network host \
+    --entrypoint /usr/bin/frpc \
+    -v /opt/frpc/frpc.toml:/frp/frpc.toml:ro \
+    snowdreamtech/frpc \
+    -c /frp/frpc.toml
+```
+
+也可以直接使用本仓库脚本启动,默认读取 `/opt/frpc/frpc.toml`.
+```shell
+chmod +x frpc_docker_run.sh
+./frpc_docker_run.sh
+# 或指定配置路径
+./frpc_docker_run.sh /path/to/frpc.toml
+```
+
+服务运行中修改 **frpc.toml** 配置后需重启 **frpc** 容器.
+```shell
+vi /opt/frpc/frpc.toml
+docker restart frpc
+```
+
+# 链接
 - Blog [www.ioiox.com](https://www.ioiox.com)
 - GitHub [stilleshan/frps](https://github.com/stilleshan/frps)
 - Docker Hub [stilleshan/frps](https://hub.docker.com/r/stilleshan/frps)

@@ -1,0 +1,30 @@
+# frps 服务端地址,需要改成你的公网服务器 IP 或域名.
+serverAddr = "xxxxx"
+# frps 服务端 bindPort,需要和 frps.toml 中的 bindPort 保持一致.
+serverPort = 7000
+
+auth.method = "token"
+# frps 鉴权 token,需要和 frps.toml 中的 auth.token 保持一致.
+auth.token = "xxxx"
+
+[[proxies]]
+# 代理名称,同一个 frps 下需要保持唯一.
+name = "ssh-6"
+type = "tcp"
+# 本机要暴露的服务地址.
+localIP = "127.0.0.1"
+# 本机 SSH 端口.
+localPort = 22
+# frps 服务端对外暴露的端口,需要在 frps.toml 的 allowPorts 范围内且不能冲突.
+remotePort = 7002
+
+[[proxies]]
+# 代理名称,同一个 frps 下需要保持唯一.
+name = "web-6"
+type = "tcp"
+# 本机要暴露的服务地址.
+localIP = "127.0.0.1"
+# 本机服务端口,按实际服务修改.
+localPort = 8080
+# frps 服务端对外暴露的端口,需要在 frps.toml 的 allowPorts 范围内且不能冲突.
+remotePort = 7003
